@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ lang|default:'ru' }}" data-theme="{{ theme|default:'light' }}">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Planner</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <a href="{% url 'planner:index' %}" class="logo">✈ Travel Planner</a>
+        <nav>
+            <a href="{% url 'planner:index' %}">Главная</a>
+            <a href="{% url 'planner:countries' %}">Направления</a>
+        </nav>
+    </header>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

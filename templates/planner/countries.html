@@ -1,0 +1,21 @@
+{% extends "planner/base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>{% if lang == 'en' %}All Destinations{% else %}Все направления{% endif %}</h1>
+<p>{% if lang == 'en' %}Interface language{% else %}Язык интерфейса{% endif %}: {{ lang }}</p>
+<ul class="country-list">
+    {% for c in countries %}
+    <li>
+        <img src="{% static c.image %}" alt="{{ c.name }}" width="120">
+        <div>
+            <h3>
+                {% if lang == 'en' %}{{ c.name_en }}{% else %}{{ c.name }}{% endif %} 
+                ({% if lang == 'en' %}{{ c.city_en }}{% else %}{{ c.city }}{% endif %})
+            </h3>
+            <p>{% if lang == 'en' %}{{ c.description_en }}{% else %}{{ c.description }}{% endif %}</p>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

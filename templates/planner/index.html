@@ -1,0 +1,101 @@
+{% extends "planner/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="hero">
+    {% if lang == 'en' %}
+        <h1>Plan your perfect trip</h1>
+    {% else %}
+        <h1>Спланируйте своё идеальное путешествие</h1>
+    {% endif %}
+</section>
+
+<section class="preferences-bar">
+        <p>
+        {% if lang == 'en' %}
+            Theme: <strong>{% if theme == 'dark' %}Dark{% else %}Light{% endif %}</strong> | 
+            Language: <strong>English</strong>
+        {% else %}
+            Тема: <strong>{% if theme == 'dark' %}Тёмная{% else %}Светлая{% endif %}</strong> | 
+            Язык: <strong>Русский</strong>
+        {% endif %}
+        
+        {% if last_country %}
+            {% for c in countries %}
+                {% if last_country == c.id|stringformat:"s" %}
+                    | {% if lang == 'en' %}Destination{% else %}Направление{% endif %}: 
+                    <strong>{% if lang == 'en' %}{{ c.name_en }}{% else %}{{ c.name }}{% endif %}</strong>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </p>
+    <form method="post" action="{% url 'planner:reset' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary">
+            {% if lang == 'en' %}Reset Settings{% else %}Сбросить настройки{% endif %}
+        </button>
+    </form>
+</section>
+
+<section class="form-section">
+    <h2>{% if lang == 'en' %}Planning Form{% else %}Форма планирования{% endif %}</h2>
+    <form method="post" action="{% url 'planner:save' %}" class="plan-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>{% if lang == 'en' %}Destination:{% else %}Направление:{% endif %}</label>
+            <select name="country">
+                <option value="">— {% if lang == 'en' %}select{% else %}выберите{% endif %} —</option>
+                {% for c in countries %}
+                    <option value="{{ c.id }}" {% if last_country == c.id|stringformat:"s" %}selected{% endif %}>
+                        {% if lang == 'en' %}{{ c.name_en }}{% else %}{{ c.name }}{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>{% if lang == 'en' %}Language:{% else %}Язык:{% endif %}</label>
+            <select name="lang">
+                {% for value, label in languages %}
+                    <option value="{{ value }}" {% if lang == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>{% if lang == 'en' %}Theme:{% else %}Тема:{% endif %}</label>
+            <select name="theme">
+                <option value="light" {% if theme == 'light' %}selected{% endif %}>
+                    {% if lang == 'en' %}Light{% else %}Светлая{% endif %}
+                </option>
+                <option value="dark" {% if theme == 'dark' %}selected{% endif %}>
+                    {% if lang == 'en' %}Dark{% else %}Тёмная{% endif %}
+                </option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">
+            {% if lang == 'en' %}Save{% else %}Сохранить{% endif %}
+        </button>
+    </form>
+</section>
+
+<section class="destinations">
+    <h2>{% if lang == 'en' %}Popular Destinations{% else %}Популярные направления{% endif %}</h2>
+    <div class="cards">
+        {% for c in countries %}
+        <div class="card">
+            <img src="{% static c.image %}" alt="{{ c.name }}">
+            <div class="card-body">
+                <h3>
+                    {% if lang == 'en' %}{{ c.name_en }}{% else %}{{ c.name }}{% endif %} 
+                    — {% if lang == 'en' %}{{ c.city_en }}{% else %}{{ c.city }}{% endif %}
+                </h3>
+                <p>{% if lang == 'en' %}{{ c.description_en }}{% else %}{{ c.description }}{% endif %}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
